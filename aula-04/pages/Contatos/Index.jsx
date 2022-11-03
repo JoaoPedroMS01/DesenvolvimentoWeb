@@ -8,7 +8,11 @@ const Contatos = () => {
         email: 'joao@email.com'
     }
 
-    console.log(contato.nome)
+    const contato2 = {
+        id: 2,
+        nome: 'Clara',
+        email: 'clara@gmail.com'
+    }
 
     return (
         <>
@@ -19,8 +23,8 @@ const Contatos = () => {
                 <li><Link to='/galeria'>GALERIA</Link></li>
             </ul>
             <ol>
-                <li><Link to={`/contatos/${contato.id}`} state={{data: contato}}>Contato João Pedro</Link></li>
-                <li><Link to='/contatos/2'>Contato Clara</Link></li>
+                <li><Link to={`/contatos/${contato.id}`} state={{nome: contato.nome, id: contato.id}}>Contato João Pedro</Link></li>
+                <li><Link to={`/contatos/${contato2.id}`} state={{nome: contato2.nome, id: contato2.id}}>Contato Clara</Link></li>
                 <li><Link to='/contatos/3'>Contato Matheus</Link></li>
             </ol>
         </>

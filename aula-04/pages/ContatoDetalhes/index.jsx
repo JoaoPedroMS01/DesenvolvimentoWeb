@@ -4,7 +4,7 @@ const ContatoDetalhes = () => {
     const {id} = useParams()
     const {state} = useLocation()
 
-    console.log(state.data)
+    console.log(state)
 
     const renderizaNome = () => {
         switch(id) {

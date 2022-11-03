@@ -1,8 +1,0 @@
-.bio {
-    display: flex;
-    justify-content: center;
-    gap: 40px;
-    align-items: center;
-    flex-direction: column;
-    height: 300px;
-}
