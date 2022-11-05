@@ -1,61 +1,70 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 import CardTask from './components/Card'
 import { FaLinkedin, FaReact } from 'react-icons/fa'
 import { Button, Container, Row, Col, Form, Stack } from 'react-bootstrap'
+import api from './services/api'
 
-const tasks = [
-  {
-    id: 1,
-    titulo: 'Primeira Task',
-    descricao: 'Descrição da primeira task',
-    propriedade: 'URGENTE'
-  },
-  {
-    id: 2,
-    titulo: 'Segunda Task',
-    descricao: 'Descrição da segunda task',
-    propriedade: 'URGENTE'
-  },
-  {
-    id: 3,
-    titulo: 'Terceira Task',
-    descricao: 'Descrição da terceira task',
-    propriedade: 'URGENTE'
-  }
-]
+// const tasks = [
+//   {
+//     id: 1,
+//     titulo: 'Primeira Task',
+//     descricao: 'Descrição da primeira task',
+//     propriedade: 'URGENTE'
+//   },
+//   {
+//     id: 2,
+//     titulo: 'Segunda Task',
+//     descricao: 'Descrição da segunda task',
+//     propriedade: 'URGENTE'
+//   },
+//   {
+//     id: 3,
+//     titulo: 'Terceira Task',
+//     descricao: 'Descrição da terceira task',
+//     propriedade: 'URGENTE'
+//   }
+// ]
 
 function App() {
     const [titulo, setTitulo] = useState('')
     const [descricao, setDescricao] = useState('')
     const [prioridade, setPrioridade] = useState('')
     const [id, setId] = useState(3)
-    const [taskList, setTaskList] = useState(tasks)
+    const [taskList, setTaskList] = useState([])
 
-  const handleTask = () => {
+  const handleTask = async () => {
     if (titulo == '' || prioridade == '' || descricao == '') {
       alert('Preencha todos os campos')
       return
     }
     const newTask = {
-      id: id + 1,
       titulo: titulo,
       descricao: descricao,
       prioridade: prioridade
     }
 
-    // api.post('/tasks', newTask)
+    const { data } = await api.post('/tasks', newTask)
+    console.log(data)
+    setTaskList([...taskList, data])
 
     //Devemos sempre atualizar o state para evitar problemas de renderização
     // tasks.push(newTask)
-    setTaskList([...taskList, newTask])
 
-    setId(id + 1)
     setTitulo('')
     setDescricao('')
     setPrioridade('')
+
   }
 
+  useEffect(() => {
+    const getTasks = async () => {
+      const { data } = await api.get('/tasks')
+      setTaskList(data)
+    }
+    getTasks()
+  }, [])
+  
   return (
     <>
     <Container className='bg-secondary'>
@@ -81,9 +90,9 @@ function App() {
       </Form>
 
       <Stack>
-        {taskList.map(item => {
+        {taskList.length > 0 ? taskList.map(item => {
           return <CardTask key={item.id} task={item}/>
-        })}
+        }) : <h1>Sem informações para exibir</h1>}
       </Stack>
     </Container>
     </>
