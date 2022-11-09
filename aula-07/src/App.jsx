@@ -32,7 +32,9 @@ function App() {
     const [prioridade, setPrioridade] = useState('')
     const [id, setId] = useState(3)
     const [taskList, setTaskList] = useState([])
+    const [isEditing, setEditing] = useState({id: '', edit: true})
 
+  //POST
   const handleTask = async () => {
     if (titulo == '' || prioridade == '' || descricao == '') {
       alert('Preencha todos os campos')
@@ -45,8 +47,8 @@ function App() {
     }
 
     const { data } = await api.post('/tasks', newTask)
-    console.log(data)
     setTaskList([...taskList, data])
+    console.log(data)
 
     //Devemos sempre atualizar o state para evitar problemas de renderização
     // tasks.push(newTask)
@@ -54,14 +56,28 @@ function App() {
     setTitulo('')
     setDescricao('')
     setPrioridade('')
+  }
 
+  //DELETE
+  const deleteTask = async (id) => {
+    try {
+      console.log(taskList)
+      const deletedTask = await api.delete(`/tasks/${id}`)
+      // getTasks()
+      console.log(deletedTask)
+      console.log(taskList)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  //GET
+  const getTasks = async () => {
+    const { data } = await api.get('/tasks')
+    setTaskList(data)
   }
 
   useEffect(() => {
-    const getTasks = async () => {
-      const { data } = await api.get('/tasks')
-      setTaskList(data)
-    }
     getTasks()
   }, [])
   
@@ -86,12 +102,18 @@ function App() {
         </Form.Group>
         <Stack>
           <Button className='float-end' onClick={() => {handleTask()}}>Cadastrar nova tarefa</Button>
+          <br/>
         </Stack>
       </Form>
 
       <Stack>
         {taskList.length > 0 ? taskList.map(item => {
-          return <CardTask key={item.id} task={item}/>
+          return <CardTask key={item.id} task={item} 
+          deleteTask={deleteTask}
+          setTitulo={setTitulo}
+          setDescricao={setDescricao}
+          setPrioridade={setPrioridade}
+          />
         }) : <h1>Sem informações para exibir</h1>}
       </Stack>
     </Container>
